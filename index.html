@@ -1,42 +1,32 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aplikasi Absensi</title>
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Aplikasi Absensi</h1>
-  </header>
+  <h1>Aplikasi Absensi</h1>
 
-  <main>
-    <form id="absenForm">
-      <input type="text" id="nama" placeholder="Masukkan nama" required>
-      <button type="submit">Absen Masuk</button>
-    </form>
+  <input type="text" id="nama" placeholder="Masukkan nama" />
+  <button id="absenBtn">Absen Masuk</button>
 
-    <h2>Daftar Kehadiran Hari Ini</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Nama</th>
-          <th>Jam Masuk</th>
-          <th>Jam Pulang</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="absenList"></tbody>
-    </table>
-  </main>
+  <h2>Daftar Kehadiran Hari Ini</h2>
+  <table border="1" cellpadding="6" id="daftar">
+    <tr>
+      <th>Nama</th>
+      <th>Jam Masuk</th>
+      <th>Jam Pulang</th>
+      <th>Aksi</th>
+    </tr>
+  </table>
 
- <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
 
-<!-- Config & App -->
-<script src="firebase-config.js"></script>
-<script src="app.js"></script>
+  <!-- Config & App -->
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

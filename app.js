@@ -1,63 +1,62 @@
-// app.js
+const namaInput = document.getElementById("nama");
+const absenButton = document.getElementById("absenBtn");
+const daftarTabel = document.getElementById("daftar");
 
-const absensiList = document.getElementById("absenList");
-const form = document.getElementById("absenForm");
+// Tambah data absensi (Absen Masuk)
+absenButton.addEventListener("click", () => {
+  const nama = namaInput.value.trim();
+  if (!nama) return alert("Nama harus diisi!");
 
-// Tambah data absensi (Create)
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  const jamMasuk = new Date().toLocaleTimeString("id-ID");
 
-  const nama = document.getElementById("nama").value;
-  const tanggal = new Date().toISOString().split("T")[0];
-  const jam = new Date().toLocaleTimeString();
-
-  await db.collection("absensi").add({
+  firebase.database().ref("absensi").push({
     nama,
-    tanggal,
-    masuk: jam,
-    pulang: null
+    jamMasuk,
+    jamPulang: ""
   });
 
-  form.reset();
-  loadAbsensi();
+  namaInput.value = "";
 });
 
-// Ambil semua data (Read)
-async function loadAbsensi() {
-  absensiList.innerHTML = "";
+// Tampilkan data realtime
+firebase.database().ref("absensi").on("value", (snapshot) => {
+  daftarTabel.innerHTML = `
+    <tr>
+      <th>Nama</th>
+      <th>Jam Masuk</th>
+      <th>Jam Pulang</th>
+      <th>Aksi</th>
+    </tr>
+  `;
 
-  const snapshot = await db.collection("absensi")
-    .where("tanggal", "==", new Date().toISOString().split("T")[0])
-    .get();
+  snapshot.forEach((childSnapshot) => {
+    const data = childSnapshot.val();
+    const id = childSnapshot.key;
 
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${data.nama}</td>
-      <td>${data.masuk || "-"}</td>
-      <td>${data.pulang || "-"}</td>
-      <td>
-        <button onclick="absenPulang('${doc.id}')">Pulang</button>
-        <button onclick="deleteAbsensi('${doc.id}')">Hapus</button>
-      </td>
+    const row = `
+      <tr>
+        <td>${data.nama}</td>
+        <td>${data.jamMasuk}</td>
+        <td>${data.jamPulang || "-"}</td>
+        <td>
+          <button onclick="pulang('${id}')">Pulang</button>
+          <button onclick="hapus('${id}')">Hapus</button>
+        </td>
+      </tr>
     `;
-    absensiList.appendChild(row);
+    daftarTabel.innerHTML += row;
+  });
+});
+
+// Update jam pulang
+function pulang(id) {
+  const jamPulang = new Date().toLocaleTimeString("id-ID");
+  firebase.database().ref("absensi/" + id).update({
+    jamPulang
   });
 }
 
-// Update jam pulang (Update)
-async function absenPulang(id) {
-  const jam = new Date().toLocaleTimeString();
-  await db.collection("absensi").doc(id).update({ pulang: jam });
-  loadAbsensi();
+// Hapus data
+function hapus(id) {
+  firebase.database().ref("absensi/" + id).remove();
 }
-
-// Hapus data absensi (Delete)
-async function deleteAbsensi(id) {
-  await db.collection("absensi").doc(id).delete();
-  loadAbsensi();
-}
-
-// Load pertama kali
-loadAbsensi();
