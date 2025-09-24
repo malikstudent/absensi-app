@@ -5,6 +5,8 @@ const firebaseConfig = {
 
     authDomain: "absensi-app-1d155.firebaseapp.com",
 
+    databaseURL: "https://absensi-app-1d155-default-rtdb.asia-southeast1.firebasedatabase.app", 
+
     projectId: "absensi-app-1d155",
 
     storageBucket: "absensi-app-1d155.firebasestorage.app",
@@ -18,6 +20,6 @@ const firebaseConfig = {
 };
 
 // Inisialisasi Firebase
-const app = initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 
-const analytics = getAnalytics(app);
+const db = firebase.database();

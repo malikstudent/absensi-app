@@ -1,33 +1,63 @@
-const absenForm = document.getElementById("absenForm");
-const listAbsensi = document.getElementById("listAbsensi");
+// app.js
 
-// Fungsi submit absen
-absenForm.addEventListener("submit", async (e) => {
+const absensiList = document.getElementById("absenList");
+const form = document.getElementById("absenForm");
+
+// Tambah data absensi (Create)
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const nama = document.getElementById("nama").value;
 
-  // Simpan ke Firestore
+  const nama = document.getElementById("nama").value;
+  const tanggal = new Date().toISOString().split("T")[0];
+  const jam = new Date().toLocaleTimeString();
+
   await db.collection("absensi").add({
-    nama: nama,
-    waktu: new Date()
+    nama,
+    tanggal,
+    masuk: jam,
+    pulang: null
   });
 
-  document.getElementById("nama").value = "";
-  loadData();
+  form.reset();
+  loadAbsensi();
 });
 
-// Fungsi ambil data absensi
-async function loadData() {
-  listAbsensi.innerHTML = "";
-  const snapshot = await db.collection("absensi").orderBy("waktu", "desc").get();
+// Ambil semua data (Read)
+async function loadAbsensi() {
+  absensiList.innerHTML = "";
+
+  const snapshot = await db.collection("absensi")
+    .where("tanggal", "==", new Date().toISOString().split("T")[0])
+    .get();
 
   snapshot.forEach(doc => {
     const data = doc.data();
-    const li = document.createElement("li");
-    li.textContent = `${data.nama} - ${data.waktu.toDate().toLocaleString()}`;
-    listAbsensi.appendChild(li);
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${data.nama}</td>
+      <td>${data.masuk || "-"}</td>
+      <td>${data.pulang || "-"}</td>
+      <td>
+        <button onclick="absenPulang('${doc.id}')">Pulang</button>
+        <button onclick="deleteAbsensi('${doc.id}')">Hapus</button>
+      </td>
+    `;
+    absensiList.appendChild(row);
   });
 }
 
-// Load data awal
-loadData();
+// Update jam pulang (Update)
+async function absenPulang(id) {
+  const jam = new Date().toLocaleTimeString();
+  await db.collection("absensi").doc(id).update({ pulang: jam });
+  loadAbsensi();
+}
+
+// Hapus data absensi (Delete)
+async function deleteAbsensi(id) {
+  await db.collection("absensi").doc(id).delete();
+  loadAbsensi();
+}
+
+// Load pertama kali
+loadAbsensi();
