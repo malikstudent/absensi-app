@@ -1,15 +1,27 @@
+import { db } from "./firebase-config.js";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  onSnapshot,
+  updateDoc,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
 const namaInput = document.getElementById("nama");
 const absenButton = document.getElementById("absenBtn");
 const daftarTabel = document.getElementById("daftar");
+const absensiRef = collection(db, "absensi");
 
-// Absen masuk
-absenButton.addEventListener("click", () => {
+// Tambah data absensi (Absen Masuk)
+absenButton.addEventListener("click", async () => {
   const nama = namaInput.value.trim();
   if (!nama) return alert("Nama harus diisi!");
 
   const jamMasuk = new Date().toLocaleTimeString("id-ID");
 
-  database.ref("absensi").push({
+  await addDoc(absensiRef, {
     nama,
     jamMasuk,
     jamPulang: ""
@@ -19,7 +31,7 @@ absenButton.addEventListener("click", () => {
 });
 
 // Baca data realtime
-database.ref("absensi").on("value", (snapshot) => {
+onSnapshot(absensiRef, (snapshot) => {
   daftarTabel.innerHTML = `
     <tr>
       <th>Nama</th>
@@ -29,9 +41,9 @@ database.ref("absensi").on("value", (snapshot) => {
     </tr>
   `;
 
-  snapshot.forEach((childSnapshot) => {
-    const data = childSnapshot.val();
-    const id = childSnapshot.key;
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const id = docSnap.id;
 
     const row = `
       <tr>
@@ -49,12 +61,14 @@ database.ref("absensi").on("value", (snapshot) => {
 });
 
 // Update jam pulang
-function pulang(id) {
+window.pulang = async (id) => {
   const jamPulang = new Date().toLocaleTimeString("id-ID");
-  database.ref("absensi/" + id).update({ jamPulang });
-}
+  const docRef = doc(db, "absensi", id);
+  await updateDoc(docRef, { jamPulang });
+};
 
 // Hapus data
-function hapus(id) {
-  database.ref("absensi/" + id).remove();
-}
+window.hapus = async (id) => {
+  const docRef = doc(db, "absensi", id);
+  await deleteDoc(docRef);
+};
