@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Aplikasi Absensi</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Absensi Kehadiran</h1>
+    <form id="absenForm">
+      <input type="text" id="nama" placeholder="Masukkan Nama" required>
+      <button type="submit">Absen</button>
+    </form>
+
+    <h2>Daftar Kehadiran Hari Ini</h2>
+    <ul id="listAbsensi"></ul>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
