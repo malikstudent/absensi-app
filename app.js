@@ -1,74 +1,52 @@
+// app.js
 import { db } from "./firebase-config.js";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  onSnapshot,
-  updateDoc,
-  deleteDoc,
-  doc
-} from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
-const namaInput = document.getElementById("nama");
-const absenButton = document.getElementById("absenBtn");
-const daftarTabel = document.getElementById("daftar");
-const absensiRef = collection(db, "absensi");
+document.getElementById("absensiForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-// Tambah data absensi (Absen Masuk)
-absenButton.addEventListener("click", async () => {
-  const nama = namaInput.value.trim();
-  if (!nama) return alert("Nama harus diisi!");
+  const nama = document.getElementById("nama").value;
+  const nim = document.getElementById("nim").value;
+  const keterangan = document.getElementById("keterangan").value;
 
-  const jamMasuk = new Date().toLocaleTimeString("id-ID");
+  try {
+    // Tambah data ke Firestore
+    await addDoc(collection(db, "absensi"), {
+      nama: nama,
+      nim: nim,
+      keterangan: keterangan,
+      timestamp: new Date()
+    });
 
-  await addDoc(absensiRef, {
-    nama,
-    jamMasuk,
-    jamPulang: ""
-  });
+    console.log("✅ Data absensi berhasil disimpan!");
+    alert("Absensi berhasil!");
+    document.getElementById("absensiForm").reset();
 
-  namaInput.value = "";
+    // Refresh tabel
+    loadAbsensi();
+
+  } catch (error) {
+    console.error("❌ Error saat menyimpan data:", error);
+    alert("Gagal menyimpan data, cek console!");
+  }
 });
 
-// Baca data realtime
-onSnapshot(absensiRef, (snapshot) => {
-  daftarTabel.innerHTML = `
-    <tr>
-      <th>Nama</th>
-      <th>Jam Masuk</th>
-      <th>Jam Pulang</th>
-      <th>Aksi</th>
-    </tr>
-  `;
+async function loadAbsensi() {
+  const querySnapshot = await getDocs(collection(db, "absensi"));
+  const tbody = document.querySelector("#absensiTable tbody");
+  tbody.innerHTML = "";
 
-  snapshot.forEach((docSnap) => {
-    const data = docSnap.data();
-    const id = docSnap.id;
-
-    const row = `
-      <tr>
-        <td>${data.nama}</td>
-        <td>${data.jamMasuk}</td>
-        <td>${data.jamPulang || "-"}</td>
-        <td>
-          <button onclick="pulang('${id}')">Pulang</button>
-          <button onclick="hapus('${id}')">Hapus</button>
-        </td>
-      </tr>
-    `;
-    daftarTabel.innerHTML += row;
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    const row = `<tr>
+      <td>${data.nama}</td>
+      <td>${data.nim}</td>
+      <td>${data.keterangan}</td>
+      <td>${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString() : ""}</td>
+    </tr>`;
+    tbody.innerHTML += row;
   });
-});
+}
 
-// Update jam pulang
-window.pulang = async (id) => {
-  const jamPulang = new Date().toLocaleTimeString("id-ID");
-  const docRef = doc(db, "absensi", id);
-  await updateDoc(docRef, { jamPulang });
-};
-
-// Hapus data
-window.hapus = async (id) => {
-  const docRef = doc(db, "absensi", id);
-  await deleteDoc(docRef);
-};
+// Load data awal
+loadAbsensi();

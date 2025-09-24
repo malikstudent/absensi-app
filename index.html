@@ -1,27 +1,23 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aplikasi Absensi</title>
-</head>
-<body>
-  <h1>Aplikasi Absensi</h1>
+<form id="absensiForm">
+  <input type="text" id="nama" placeholder="Nama" required>
+  <input type="text" id="nim" placeholder="NIM" required>
+  <select id="keterangan">
+    <option value="Hadir">Hadir</option>
+    <option value="Izin">Izin</option>
+    <option value="Sakit">Sakit</option>
+    <option value="Alfa">Alfa</option>
+  </select>
+  <button type="submit">Submit</button>
+</form>
 
-  <input type="text" id="nama" placeholder="Masukkan nama" />
-  <button id="absenBtn">Absen Masuk</button>
-
-  <h2>Daftar Kehadiran Hari Ini</h2>
-  <table border="1" cellpadding="6" id="daftar">
+<table id="absensiTable">
+  <thead>
     <tr>
       <th>Nama</th>
-      <th>Jam Masuk</th>
-      <th>Jam Pulang</th>
-      <th>Aksi</th>
+      <th>NIM</th>
+      <th>Keterangan</th>
+      <th>Waktu</th>
     </tr>
-  </table>
-
-  <!-- Firebase SDK -->
-  <script type="module" src="app.js"></script>
-</body>
-</html>
+  </thead>
+  <tbody></tbody>
+</table>
