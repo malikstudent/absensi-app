@@ -13,6 +13,12 @@ body {
   color: #333;
 }
 
+/* Heading */
+h2 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
 /* Form Container */
 #absensiForm {
   display: flex;
@@ -25,7 +31,7 @@ body {
   box-shadow: 0px 4px 8px rgba(0,0,0,0.05);
 }
 
-/* Input & Select */
+/* Input & Select & File */
 #absensiForm input,
 #absensiForm select {
   padding: 10px 12px;
@@ -35,6 +41,13 @@ body {
   transition: border 0.2s ease, box-shadow 0.2s ease;
   flex: 1;
   min-width: 200px;
+}
+
+#absensiForm input[type="file"] {
+  border: none;
+  background: #f9f9f9;
+  padding: 8px;
+  font-size: 13px;
 }
 
 #absensiForm input:focus,
@@ -52,6 +65,7 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.1s ease;
+  flex: 1 0 120px;
 }
 
 #absensiForm button:hover {
@@ -60,6 +74,19 @@ body {
 
 #absensiForm button:active {
   transform: scale(0.96);
+}
+
+/* Lampiran Field */
+#lampiranField {
+  flex: 1 0 100%;
+  display: none;
+}
+
+#lampiranField label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  display: block;
+  font-weight: 500;
 }
 
 /* Table */
@@ -86,9 +113,34 @@ body {
   font-size: 14px;
 }
 
+/* Link Lampiran */
+#absensiTable td a {
+  color: #4a90e2;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+#absensiTable td a:hover {
+  text-decoration: underline;
+}
+
 /* Hover row */
 #absensiTable tbody tr:hover {
   background: #f9f9f9;
+}
+
+/* Error Message */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 100%;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+  display: none; /* default tidak tampil */
 }
 
 /* Responsive */
@@ -103,20 +155,9 @@ body {
     width: 100%;
   }
 
-  #absensiTable th, #absensiTable td {
+  #absensiTable th, 
+  #absensiTable td {
     font-size: 13px;
     padding: 10px;
   }
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.error-message {
-  color: #e74c3c;
-  font-size: 12px;
-  margin-top: 4px;
-  display: none; /* default tidak tampil */
 }
