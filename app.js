@@ -16,7 +16,7 @@ document.getElementById("absensiForm").addEventListener("submit", async (e) => {
   // Validasi NIM
   const nimRegex = /^[0-9]{10,12}$/;
   if (!nimRegex.test(nim)) {
-    nimError.textContent = "NIM harus berupa angka dengan panjang 10–12 digit!";
+    nimError.textContent = "NIM minimal memiliki 10–12 digit!";
     nimError.style.display = "block";
     return; // hentikan submit
   }
