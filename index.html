@@ -7,13 +7,22 @@
   </div>
 
   <select id="keterangan">
+    <option value="">-- Pilih Keterangan --</option>
     <option value="Hadir">Hadir</option>
     <option value="Izin">Izin</option>
     <option value="Sakit">Sakit</option>
     <option value="Alfa">Alfa</option>
   </select>
+
+  <!-- Lampiran (hanya muncul kalau Izin/Sakit) -->
+    <div id="lampiranField" style="display:none;">
+      <label for="lampiran">Upload Bukti (PDF/JPG/PNG)</label>
+      <input type="file" id="lampiran" accept=".pdf,.jpg,.jpeg,.png">
+    </div>
+
   <button type="submit">Submit</button>
 </form>
+
 
 <table id="absensiTable">
   <thead>
@@ -22,10 +31,28 @@
       <th>NIM</th>
       <th>Keterangan</th>
       <th>Waktu</th>
+      <th>Lampiran</th>
     </tr>
   </thead>
   <tbody></tbody>
 </table>
 
 <script type="module" src="app.js"></script>
+
+ <!-- Script untuk toggle lampiran -->
+  <script>
+    const keteranganSelect = document.getElementById("keterangan");
+    const lampiranField = document.getElementById("lampiranField");
+
+    keteranganSelect.addEventListener("change", function() {
+      if (this.value === "Izin" || this.value === "Sakit") {
+        lampiranField.style.display = "block";
+        document.getElementById("lampiran").required = true;
+      } else {
+        lampiranField.style.display = "none";
+        document.getElementById("lampiran").required = false;
+      }
+    });
+  </script>
+
 <link rel="stylesheet" href="style.css">
