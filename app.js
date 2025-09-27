@@ -9,6 +9,18 @@ document.getElementById("absensiForm").addEventListener("submit", async (e) => {
   const nim = document.getElementById("nim").value;
   const keterangan = document.getElementById("keterangan").value;
 
+    // Reset pesan error setiap submit
+  nimError.style.display = "none";
+  nimError.textContent = "";
+
+  // Validasi NIM
+  const nimRegex = /^[0-9]{10,12}$/;
+  if (!nimRegex.test(nim)) {
+    nimError.textContent = "NIM harus berupa angka dengan panjang 10–12 digit!";
+    nimError.style.display = "block";
+    return; // hentikan submit
+  }
+
   try {
     // Tambah data ke Firestore
     await addDoc(collection(db, "absensi"), {
@@ -18,15 +30,18 @@ document.getElementById("absensiForm").addEventListener("submit", async (e) => {
       timestamp: new Date()
     });
 
-    console.log("✅ Data absensi berhasil disimpan!");
+    console.log("Data absensi berhasil disimpan!");
     alert("Absensi berhasil!");
     document.getElementById("absensiForm").reset();
+
+    // Hapus pesan error setelah reset
+    nimError.style.display = "none";
 
     // Refresh tabel
     loadAbsensi();
 
   } catch (error) {
-    console.error("❌ Error saat menyimpan data:", error);
+    console.error("Error saat menyimpan data:", error);
     alert("Gagal menyimpan data, cek console!");
   }
 });

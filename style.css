@@ -108,3 +108,15 @@ body {
     padding: 10px;
   }
 }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+  display: none; /* default tidak tampil */
+}
